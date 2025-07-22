@@ -1,52 +1,61 @@
 // backend/server.js
 
-
 const express = require("express");
 const cors = require("cors");
-const connectDB = require("./config/db");
 const http = require("http");
-const socketIo = require("socket.io"); // ✅ Import Socket.io
+const socketIo = require("socket.io");
+const connectDB = require("./config/db");
+require("dotenv").config();
+
+const authRoutes = require("./routes/authRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 const contactRoute = require("./routes/contact");
-// ✅ Express app and HTTP server
+
+// ✅ Initialize Express and HTTP server
 const app = express();
 const server = http.createServer(app);
-require('dotenv').config();
 
+// ✅ Allowed origins (for CORS and Socket.io)
+const allowedOrigins = [
+  process.env.CLIENT_URL || "http://localhost:3000",
+];
 
-// ✅ Initialize Socket.io and configure CORS
+// ✅ Setup Socket.io
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// ✅ Attach io instance to app so it’s accessible in routes
+// ✅ Attach io to app for access in routes/controllers
 app.set("io", io);
 
-// ✅ Connect to MongoDB
+// ✅ Connect to MongoDB Atlas
 connectDB();
 
-// ✅ Middlewares
+// ✅ Middleware
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
-// ✅ Serve uploaded images
+// ✅ Serve uploaded static files (images)
 app.use("/uploads", express.static("uploads"));
 
 // ✅ Routes
-const authRoutes = require("./routes/authRoutes");
-const blogRoutes = require("./routes/blogRoutes");
 app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/contact", contactRoute);
 
-// ✅ Basic route
+// ✅ Health check route
 app.get("/", (req, res) => {
-  res.send("API is running on localhost ✅");
+  res.send("🌍 Inkspire Backend API is Live!");
 });
 
-// ✅ Socket.io connection event
+// ✅ Socket.io connection
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
 
@@ -55,8 +64,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Start the server
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () =>
-  console.log(`✅ Server running at :${PORT}`)
-);
+server.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
