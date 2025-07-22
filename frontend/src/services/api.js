@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/api",
   withCredentials: true,
 });
 
+// Optional: Attach token to all requests
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -13,6 +14,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Auth APIs
 export const registerUser = async (userData) => {
   const response = await API.post("/auth/register", userData);
   return response.data;
