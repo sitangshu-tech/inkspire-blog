@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../services/api";  // Unified axios with token handling
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import BlogCard from "../components/BlogCard";
 import "../styles/home.css";

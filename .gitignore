@@ -11,6 +11,7 @@ out/
 
 # dotenv files
 .env
+uploads/
 .env.*
 !.env.example
 

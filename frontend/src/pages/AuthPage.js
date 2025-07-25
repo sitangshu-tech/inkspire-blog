@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axios from "../services/api";  // Unified axios with token handling
+
 import "../styles/auth.css";
 
 const AuthPage = () => {
@@ -27,7 +29,9 @@ const AuthPage = () => {
       });
       localStorage.setItem("token", res.data.token);
        localStorage.setItem("user", JSON.stringify(res.data.user)); 
-      window.location.href = "/dashboard";
+      const navigate = useNavigate();
+// After login or register success:
+navigate("/dashboard");
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed";
       setError(msg);

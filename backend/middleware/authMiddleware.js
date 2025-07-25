@@ -16,7 +16,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(
       token,
-      process.env.jwt_SECRET // ✅ Hardcoded (but consider using .env in production)
+      process.env.JWT_SECRET // ✅ Hardcoded (but consider using .env in production)
     );
 
     // ✅ Set both `id` and `_id` on req.user
