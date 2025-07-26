@@ -166,5 +166,5 @@ New contributors, designers, or collaborators are always welcome!
 
 ---
 
-Let me know if you want me to include screenshots, deployment links, or badges (build, license, etc.) in the README.
+
 
