@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../services/api";  // Unified axios with token handling
-
 import "../styles/auth.css";
 
 const AuthPage = () => {
@@ -14,6 +13,8 @@ const AuthPage = () => {
   });
   const [error, setError] = useState("");
 
+  const navigate = useNavigate(); // ✅ move useNavigate to top level
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -23,15 +24,15 @@ const AuthPage = () => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("/auth/login", {
         email: formData.email,
         password: formData.password,
       });
+
       localStorage.setItem("token", res.data.token);
-       localStorage.setItem("user", JSON.stringify(res.data.user)); 
-      const navigate = useNavigate();
-// After login or register success:
-navigate("/dashboard");
+      localStorage.setItem("user", JSON.stringify(res.data.user || {}));
+
+      navigate("/dashboard"); // ✅ works now
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed";
       setError(msg);
@@ -47,14 +48,16 @@ navigate("/dashboard");
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      const res = await axios.post("/auth/register", {
         name: formData.name,
         email: formData.email,
         password: formData.password,
       });
+
       localStorage.setItem("token", res.data.token);
-       localStorage.setItem("user", JSON.stringify(res.data.user));
-      window.location.href = "/dashboard";
+      localStorage.setItem("user", JSON.stringify(res.data.user || {}));
+
+      navigate("/dashboard");
     } catch (err) {
       console.error("Register error:", err);
       const msg = err.response?.data?.message || "Something went wrong";

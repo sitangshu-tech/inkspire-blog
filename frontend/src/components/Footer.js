@@ -66,7 +66,7 @@ const Footer = () => {
         </div>
         <hr className="bg-light" />
         <p className="text-center small mb-0">
-          &copy; {new Date().getFullYear()} <strong>Inkspire</strong>. All rights reserved.
+          &copy; {new Date().getFullYear()} <strong>Inkspire</strong>. All rights reserved.@sitangshu
         </p>
       </div>
     </footer>
