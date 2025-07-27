@@ -46,6 +46,11 @@ app.get("/", (req, res) => {
   res.send("API is running on localhost ✅");
 });
 
+app.get("/health", (req,res)=> {
+  res.status(200).send("OK ---✅ the site is Running")
+})
+
+
 // ✅ Socket.io connection event
 io.on("connection", (socket) => {
   console.log("🟢 New client connected:", socket.id);
