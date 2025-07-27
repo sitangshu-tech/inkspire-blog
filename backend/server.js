@@ -21,7 +21,7 @@ if (!fs.existsSync(uploadsDir)) {
 // ✅ Initialize Socket.io and configure CORS
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Change to your frontend URL after deploy
+    origin: "http://localhost:3000",  // Change to your frontend URL after deploy
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -35,7 +35,16 @@ connectDB();
 
 // ✅ Middlewares
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://inkspireblog.vercel.app/" 
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 
 // ✅ Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
