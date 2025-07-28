@@ -21,7 +21,6 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    // ✅ Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -29,16 +28,22 @@ router.post("/register", async (req, res) => {
     await user.save();
 
     const token = jwt.sign(
-      { id: user._id }, 
-      process.env.JWT_SECRET, // or use process.env.JWT_SECRET if you use .env
+      { id: user._id },
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-    res.status(201).json({ token });
+
+  res.status(201).json({
+  token,
+  user: { _id: user._id, name: user.name, email: user.email }
+});
+
   } catch (error) {
     console.error("Register Error:", error);
     res.status(500).json({ message: "Registration failed" });
   }
 });
+
 // Login
 router.post("/login", async (req, res) => {
   try {
