@@ -5,7 +5,6 @@ const http = require("http");
 const socketIo = require("socket.io");
 const fs = require("fs");
 const path = require("path");
-
 require("dotenv").config();
 
 const app = express();
@@ -18,16 +17,23 @@ if (!fs.existsSync(uploadsDir)) {
   console.log("📂 uploads folder created");
 }
 
-// ✅ Initialize Socket.io and configure CORS
+// ✅ Define allowed origins for both development and production
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://inkspire-blog.vercel.app"
+];
+
+// ✅ Initialize Socket.io with proper CORS
 const io = socketIo(server, {
   cors: {
+    origin: allowedOrigins,
     origin: "http://localhost:3000",  // Change to your frontend URL after deploy
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// ✅ Attach io instance to app so it’s accessible in routes
+// ✅ Attach io instance to app for use in routes
 app.set("io", io);
 
 // ✅ Connect to MongoDB
@@ -35,6 +41,18 @@ connectDB();
 
 // ✅ Middlewares
 app.use(express.json());
+
+// ✅ CORS middleware using dynamic origin check
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 const allowedOrigins = [
   "http://localhost:3000",
   "https://inkspireblog.vercel.app/" 
@@ -58,7 +76,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/contact", contactRoute);
 
-// ✅ Basic route
+// ✅ Basic route for testing
 app.get("/", (req, res) => {
   res.send("API is running ✅");
 });
