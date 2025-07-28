@@ -27,7 +27,6 @@ const allowedOrigins = [
 const io = socketIo(server, {
   cors: {
     origin: allowedOrigins,
-    origin: "http://localhost:3000",  // Change to your frontend URL after deploy
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -53,16 +52,6 @@ app.use(cors({
   },
   credentials: true,
 }));
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://inkspireblog.vercel.app/" 
-];
-
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
-
 
 // ✅ Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
